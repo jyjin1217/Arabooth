@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+
+{% block head %}    
+    
+{% endblock %}
+
+{% block content %}
+<!-- Begin Page Content -->
+<div class="container-fluid">
+    
+    <div style="width: 100%; height: 100%; display: table;">
+        <div style="display: table-cell; vertical-align: middle;">
+            <!-- DataTales Example -->
+            <div class="card shadow mb-4" style="margin-top: 1.5rem!important;">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Create New User</h6>
+                </div>
+                <div class="card-body">        
+                    
+                    <form action="#" method="POST">
+                        <p class="m-0 font-weight-bold text-primary">* CSV파일 Local 경로를 적어주세요</p>
+                        <input name="fileLocate" type="text" class="form-control form-control-user" placeholder="Enter .csv file address..." style="width: 50%; display: unset;">
+                        <input type="submit" value="submit" class="btn btn-success">
+                    </form>
+                    <p></p>
+                    <div>Result Log : {{postResult}}</div>
+
+                    <hr class="sidebar-divider">
+
+                    <p class="m-0 font-weight-bold text-primary">* 고객(User)을 추가하려면</p>
+                    <div>양식에 맞는 csv 파일을 생성한 뒤, 파일 경로를 입력하고 추가버튼을 눌러주시면 됩니다</div>
+                    <p></p>
+
+                    <p class="m-0 font-weight-bold text-primary">* CSV 파일 ?</p>
+                    <div>Comma-Separated Variables의 약자로 필드를 쉼표(,)로 구분한 텍스트 파일입니다</div>
+                    <p></p>
+
+                    <p class="m-0 font-weight-bold text-primary">* CSV 파일 생성 방법</p>
+                    <div>Excel 문서 > 다른 이름으로 저장 (다른 형식 선택) > 파일 형식 드롭다운 메뉴에서 CSV 선택 후 저장 > '예' 선택</div>
+                    <p></p>
+
+                    <p class="m-0 font-weight-bold text-primary">* Excel 문서 양식</p>
+                    <div>content</div>  
+                    <p></p>
+
+                    <p class="m-0 font-weight-bold text-primary">* Local 경로 확인 방법</p>
+                    <div>content</div>     
+                    <p></p>     
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+<!-- /.container-fluid -->
+
+<script>
+
+</script>
+{% endblock %}

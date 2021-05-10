@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+
+{% block head %}    
+    
+<style>
+    .myGrid{
+        display: grid;
+        grid-template-columns: 50% 50%;
+        grid-template-rows: 33% 33% 33%;
+        height: 97%;
+        align-items: center;
+    }
+    .itemRow1{
+        grid-row: 1/3;
+        grid-column: 2/3;
+        align-self: flex-start;
+    }
+</style>
+
+{% endblock %}
+
+{% block content %}
+
+
+<div style="margin: 10rem!important;width: 100%;">
+    <div class="card border-left-warning shadow h-100 py-2">
+        <div class="card-body">
+            <div class="row no-gutters align-items-center">
+                <div class="col mr-2">
+                    <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                        Connect new device</div>
+                    <!-- <div class="h5 mb-0 font-weight-bold text-gray-800">18</div> -->
+                </div>                
+                
+            </div>
+
+            <div class="myGrid">
+                <div>
+                    IP를 입력하세요<br>
+                    <input id="ipInput" type="text" style="width: 50%;">
+                </div>
+
+                <div class="itemRow1">
+                    <div class="col-auto">
+                        <i class="fas fa-comments fa-2x text-gray-300"></i>
+                        Log
+                    </div>
+                    <div id="logText"></div>
+                </div>
+    
+                <div>
+                    이름을 설정해주세요<br>
+                    <input id="nameInput" type="text" style="width: 50%;">
+                </div>
+    
+                <div>
+                    비밀번호를 설정해주세요<br>
+                    <input id="pwInput" type="text" style="width: 50%;">
+                </div>
+
+                <div style="text-align: center;">
+                    <a href="#" class="btn btn-success btn-icon-split">
+                        <span class="icon text-white-50">
+                            <i class="fas fa-check"></i>
+                        </span>
+                        <span class="text">Create new iot</span>
+                    </a>
+                </div>
+            </div>
+            
+        </div>
+    </div>    
+</div>
+
+<form action="#" method="POST">
+    <input type="submit" value="submit">
+</form>
+
+<script>
+    const ewelink = require('ewelink-api');
+
+    const conn = new ewewlink({
+        email:'jyjin1217@gmail.com',
+        password:'2718059in',
+        region: getRegion()
+    });
+
+    const devices = await conn.getDevices();
+    console.log(devices);
+    
+</script>
+{% endblock %}
