@@ -5,6 +5,18 @@ import sonoff_custom
 import csv
 import threading
 from time import sleep
+import os
+from pymongo import MongoClient
+
+
+#client = MongoClient('mongodb://mocha:mochamocha.@docdb-2021-05-11-05-38-41.cluster-cnnzidmnwuis.ap-northeast-2.docdb.amazonaws.com:27017/?replicaSet=rs0&readPreference=secondaryPreferred&retryWrites=false')
+#db = client.sample_database;
+#print(client.list_database_names());
+#col = db.sample_collection;
+#col.insert_one({'hello':'Amazon DocumentDB'});
+#x = col.find_one({'hello':'Amazon DocumentDB'});
+#print(x);
+#client.close();
 
 s = None;
 devices = None;
@@ -21,53 +33,74 @@ def iot_total():
 
 @application.route("/iot_new", methods=["POST","GET"])
 def iot_new():
-    # global s, devices;
-    # if request.method == "POST":        
-    #     device_id = devices[0]['deviceid'];
-    #     swi = devices[0]['params']['switch'];
-    #     bb = not bb;
-    #     if bb:
-    #         s.switch("on", device_id, None); 
-    #     else:
-    #         s.switch("off", device_id, None);   
-    # else:
-    #     #s = sonoff_custom.Sonoff("jyjin1217@gmail.com", "2718059in", "as");
-    #     if s == None:
-    #         s = sonoff_custom.Sonoff("iason78@naver.com", "koelceo5406!", "as");
-    #     else:
-    #         s.do_reconnect();
+    global s, devices;
+    if request.method == "POST":        
+        device_id = devices[0]['deviceid'];
+        swi = devices[0]['params']['switch'];
+        bb = not bb;
+        if bb:
+            s.switch("on", device_id, None); 
+        else:
+            s.switch("off", device_id, None);   
+    else:
+        #s = sonoff_custom.Sonoff("jyjin1217@gmail.com", "2718059in", "as");
+        if s == None:
+            s = sonoff_custom.Sonoff("iason78@naver.com", "koelceo5406!", "as");
+        else:
+            s.do_reconnect();
 
-    #     devices = s.get_devices(False);
-    #     #print(devices);
-    #     print(devices[0]);
+        devices = s.get_devices(False);
+        #print(devices);
+        print(devices[0]);
     
     return render_template("iot_new.html");
 
 @application.route("/user_new", methods=["POST","GET"])
 def user_new():
+
+    # 페이지에 던져줄 로그 string
     csvResult = "";
-    if request.method == "POST":
+
+    if request.method == "POST":  
+        # form에서 클릭하여 넘어온 값, 키는 속성 name이다      
         fileLocate = request.form["fileLocate"];
-        f = open(fileLocate, 'r', encoding='cp949');        
-        csvText = csv.reader(f);        
 
-        topicList = [];
-        isTopic = True;
-        for line in csvText:            
-            if isTopic :
-                for data in line:
-                    topicList.append(data);
-                isTopic = False;
-                print(topicList);
-                continue;
+        # 경로값 분리 및 검사
+        name, extenstion = os.path.splitext(fileLocate);
+        if extenstion == "":
+            csvResult = "Address must include file extension"
+            return render_template("user_new.html", postResult=csvResult);
+        elif extenstion != ".csv":
+            csvResult = "Allowed file type is .csv file only"
+            return render_template("user_new.html", postResult=csvResult);
 
-            print(line);
+        # 파일 오픈
+        try:
+            # 파일이 실제 존재하는지 검사
+            # cp949로 encoding 해야 한글이 가능함
+            f = open(fileLocate, 'r', encoding='cp949');
+        except Exception as e:
+            csvResult = e;
+        else:
+            # csv 파일 읽기
+            csvText = csv.reader(f);
 
-        csvResult = "Hello";
+            # csv 파일 분석
+            # aws dynamoDB 파일 Input
 
-    global s, devices;
-    print(s);
-    print(devices);
+            topicList = [];
+            isTopic = True;
+            for line in csvText:            
+                if isTopic :
+                    for data in line:
+                        topicList.append(data);
+                    isTopic = False;
+                    print(topicList);
+                    continue;
+
+                print(line);
+
+            csvResult = "Hello";   
 
     return render_template("user_new.html", postResult=csvResult);
 
@@ -77,7 +110,7 @@ def userMessage(message):
     print(message);
 
     msg = {};
-    msg['msg'] = "server";
+    msg['msg'] = "local server";
     mjson = json.dumps(msg);
     
     return mjson;
