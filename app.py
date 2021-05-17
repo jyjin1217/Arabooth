@@ -19,7 +19,7 @@ from pymongo import MongoClient
 #client.close();
 
 s = None;
-devices = None;
+deviceDic = {};
 
 application = Flask(__name__);
 
@@ -33,25 +33,25 @@ def iot_total():
 
 @application.route("/iot_new", methods=["POST","GET"])
 def iot_new():
-    global s, devices;
-    if request.method == "POST":        
-        device_id = devices[0]['deviceid'];
-        swi = devices[0]['params']['switch'];
-        bb = not bb;
-        if bb:
-            s.switch("on", device_id, None); 
-        else:
-            s.switch("off", device_id, None);   
-    else:
-        #s = sonoff_custom.Sonoff("jyjin1217@gmail.com", "2718059in", "as");
-        if s == None:
-            s = sonoff_custom.Sonoff("iason78@naver.com", "koelceo5406!", "as");
-        else:
-            s.do_reconnect();
+    # global s, deviceDic;
+    # if request.method == "POST":        
+    #     device_id = deviceDic[0]['deviceid'];
+    #     swi = deviceDic[0]['params']['switch'];
+    #     bb = not bb;
+    #     if bb:
+    #         s.switch("on", device_id, None); 
+    #     else:
+    #         s.switch("off", device_id, None);   
+    # else:
+    #     #s = sonoff_custom.Sonoff("jyjin1217@gmail.com", "2718059in", "as");
+    #     if s == None:
+    #         s = sonoff_custom.Sonoff("iason78@naver.com", "koelceo5406!", "as");
+    #     else:
+    #         s.do_reconnect();
 
-        devices = s.get_devices(False);
-        #print(devices);
-        print(devices[0]);
+    #     deviceDic = s.get_devices(False);
+    #     #print(devices);
+    #     print(deviceDic[0]);
     
     return render_template("iot_new.html");
 
@@ -107,35 +107,60 @@ def user_new():
 
 @application.route("/userMessage/<message>", methods=["POST","GET"])
 def userMessage(message):
-    print(message);
+    global s, deviceDic;
 
-    msg = {};
-    msg['msg'] = "local server";
-    mjson = json.dumps(msg);
+    m = message.split(' ');
+    returnMsg = {};
+    returnMsg['msg'] = "Inappropriate Message";
+
+    if m[0] == 'Work&All' and len(m) >= 4:
+        if m[3] == "on" or m[3] == "off":
+            if m[1] in deviceDic:
+                if m[2] in deviceDic[m[1]]:
+                    s.switch(m[3], deviceDic[m[1]][m[2]]); 
+                    returnMsg['msg'] = "Dispatched";
+    
+    mjson = json.dumps(returnMsg);
     
     return mjson;
 
-
 def loginSonoff():
-    global s, devices;
+    # ewelink 로그인
+    global s, deviceDic;
     if s == None:
         s = sonoff_custom.Sonoff("iason78@naver.com", "koelceo5406!", "as");
     else:
         s.do_reconnect();
     
-    devices = s.get_devices();
+    # 디바이스 업데이트
+    temp = s.get_devices();
+    for device in temp:        
+        dName = device['name'].split(' ');
+
+        if dName[0] != 'Work&All':
+            continue;
+        if len(dName) < 3 :
+            continue;        
+                
+        if dName[1] in deviceDic :
+            deviceDic[dName[1]][dName[2]] = device['deviceid'];
+        else:
+            temDic = {};
+            temDic[dName[2]] = device['deviceid'];
+            deviceDic[dName[1]] = temDic;
+
 
 def thProc():
     while True:
         loginSonoff();
-        sleep(60);
+        sleep(1800);
 
-# th = threading.Thread(target=thProc);
-# th.start();
+th = threading.Thread(target=thProc);
+th.start();
 
 if __name__ == "__main__":
-    application.run(debug=True);
-
+    # application.run(debug=True);
+    application.run();
 
 
 
