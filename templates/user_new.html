@@ -17,18 +17,41 @@
                 </div>
                 <div class="card-body">        
                     
-                    <form action="#" method="POST">
-                        <p class="m-0 font-weight-bold text-primary">* CSV파일 Local 경로를 적어주세요</p>
+                    <form action = "#" method = "POST" enctype = "multipart/form-data">
+                        <p class="m-0 font-weight-bold text-primary">* 개별정보로 업로드</p>
+                        <p></p>
+                        <input name="newId" type="text" class="form-control form-control-user" placeholder="Enter id.." style="width: 15%; display: unset;">
+                        <input name="newName" type="text" class="form-control form-control-user" placeholder="Enter name.." style="width: 15%; display: unset;">
+                        <input name="newPhone" type="text" class="form-control form-control-user" placeholder="Enter phone number.." style="width: 15%; display: unset;">
+                        <input name="newCompany" type="text" class="form-control form-control-user" placeholder="Enter company.." style="width: 15%; display: unset;">
+                        <input name="newLocate" type="text" class="form-control form-control-user" placeholder="Enter locate.." style="width: 15%; display: unset;">
+                        <input type = "submit" name = "addOne" value="추가/수정"/>
+                        <input type = "submit" name = "delOne" value="삭제"/>
+                    </form>
+
+                    <p></p>
+
+                    <form action = "#" method = "POST" enctype = "multipart/form-data">
+                        <p class="m-0 font-weight-bold text-primary">* CSV파일로 업로드</p>
+                        <p></p>
+                        <input type = "file" name = "file" style="cursor: pointer;"/>
+                        <input type = "submit" name = "addAll" value="추가/수정"/>
+                        <input type = "submit" name = "delAll" value="삭제"/>
+                    </form>
+
+                    <!-- <form action="#" method="POST">                        
                         <input name="fileLocate" type="text" class="form-control form-control-user" placeholder="Enter .csv file address..." style="width: 50%; display: unset;">
                         <input type="submit" value="submit" class="btn btn-success">
-                    </form>
-                    <p></p>
+                    </form> -->
+
+
+                    <hr class="sidebar-divider">
                     <div>Result Log : {{postResult}}</div>
 
                     <hr class="sidebar-divider">
 
-                    <p class="m-0 font-weight-bold text-primary">* 고객(User)을 추가하려면</p>
-                    <div>양식에 맞는 csv 파일을 생성한 뒤, 파일 경로를 입력하고 추가버튼을 눌러주시면 됩니다</div>
+                    <p class="m-0 font-weight-bold text-primary">* 고객(User) 데이터베이스를 수정하려면?</p>
+                    <div>고객의 개별 정보를 직접 입력하시거거나 양식에 맞는 csv 파일을 선택한 후 추가/수정 혹은 삭제 버튼을 클릭합니다</div>
                     <p></p>
 
                     <p class="m-0 font-weight-bold text-primary">* CSV 파일 ?</p>
@@ -42,11 +65,8 @@
                     <p class="m-0 font-weight-bold text-primary">* Excel 문서 양식</p>
                     <div>content</div>  
                     <p></p>
-
-                    <p class="m-0 font-weight-bold text-primary">* Local 경로 확인 방법</p>
-                    <div>content</div>     
-                    <p></p>     
-
+                    
+                    
                 </div>
             </div>
         </div>
@@ -55,7 +75,4 @@
 </div>
 <!-- /.container-fluid -->
 
-<script>
-
-</script>
 {% endblock %}

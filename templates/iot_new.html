@@ -76,17 +76,24 @@
     <input type="submit" value="submit">
 </form>
 
+<button onclick="ttt()">hhhhh</button>
+
 <script>
-    const ewelink = require('ewelink-api');
+    function ttt(){
+        console.log("hhh");
+        localStorage.setItem("testing", "aaa")
+    }
 
-    const conn = new ewewlink({
-        email:'jyjin1217@gmail.com',
-        password:'2718059in',
-        region: getRegion()
-    });
+    // const ewelink = require('ewelink-api');
 
-    const devices = await conn.getDevices();
-    console.log(devices);
+    // const conn = new ewewlink({
+    //     email:'jyjin1217@gmail.com',
+    //     password:'2718059in',
+    //     region: getRegion()
+    // });
+
+    // const devices = await conn.getDevices();
+    // console.log(devices);
     
 </script>
 {% endblock %}
