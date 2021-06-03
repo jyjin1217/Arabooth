@@ -74,96 +74,57 @@ def user_new():
 
         # csv파일로 데이터베이스 변경
         if isAll :
+            # 파일이 존재하는지 확인
+            if not request.files.get("file"):
+                isOk = False;
+                csvResult = "No file to upload";
+                        
             # 올바른 파일(csv)인지 걸러내기 to do
-
-
-            # csv파일이라면
             if isOk:
-                file = request.files["file"];
-                file_data = file.read().decode("cp949");
+                pass;
+            
+            # csv파일 확인시
+            if isOk:
+                f = request.files["file"];
+                fd = f.read().decode("cp949").splitlines();
 
-                isTopic = True; # 첫줄(topic) 걸러내기 및 키값 확인
-                keyDic = {}; # topic 컬럼번호를 저장할 dic
-                keyCount = 0; # 현재 컬럼체크
-                temStr = ""; # 각 컬럼 문자 정보
-                isSkip = False; # 스킵 여부
+                #reader = csv.reader(fd); # 리스트 style
+                reader = csv.DictReader(fd); # 딕셔너리 style
 
+                # 리스트로 변경(검사를 위함)
+                dicList = list(reader); 
+
+                # 내용물 검사
+                if len(dicList) > 0:
+                    # 키값(Topic) 검사
+                    if not (dicList[0].get('개인ID') and dicList[0].get('회원명') and dicList[0].get('연락처') and dicList[0].get('회사명') and dicList[0].get('호점')):
+                        isOk = False;
+                        csvResult = "Key value is not matched. You should check your csv file"
+                else:
+                    isOk = False;
+                    csvResult = "There are no data in file";
                 
-                temDic = {}; # total에 담을 개별 dic
-                nameKey = 0; # 별개의 object 이름 부여용도
+                # 데이터 담기
+                if isOk:
+                    nameKey = 0; # 별개의 object 이름 부여용도
+                    for data in dicList:
+                        # 스킵 조건
+                        if data.get("서비스타입"):
+                            if data["서비스타입"] == "퇴실회원":
+                                continue;
+                        
+                        temDic = {};
+                        temDic['id'] = data["개인ID"];
+                        temDic['name'] = data["회원명"];
+                        temDic['phone'] = data["연락처"];
+                        temDic['company'] = data["회사명"];
+                        temDic['locate'] = data["호점"];
+                        temDic['type'] = rType;
 
-                for curStr in file_data:
-                    # 한 라인 종료 (= topic 종료 or 한명의 데이터 종료)
-                    if curStr == '\n':  
-
-                        keyCount = 0;
-                        temStr = ""; # isSkip이 일어났을 시, 뒤쪽 데이터가 쌓여있을 수 있기 때문
-
-                        if isTopic:
-                            isTopic = False;
-                            # 필요한 키값이 다 존재하지 않을 시, 진행 종료
-                            if not (keyDic.get('개인ID') and keyDic.get('회원명') and keyDic.get('연락처') and keyDic.get('회사명') and keyDic.get('호점')) :
-                                csvResult = "Key value is not matched. You should check your csv file";
-                                isOk = False;
-                                break;
-
-                            # 반드시 필요하지는 않기에, 없을시에는 로직오류를 없애기 위해 대입
-                            if not keyDic.get('서비스타입'):
-                                keyDic['서비스타입'] = -1;
-
-                        else:
-                            if isSkip:
-                                isSkip = False;
-                            else:
-                                # 실제 저장할 데이터로써 total에 담기
-                                curName = "obj" + str(nameKey);
-                                nameKey += 1;
-                                temDic['type'] = rType;
-                                totalDic[curName] = temDic;
-                                temDic = {};
-
-                    # 한 컬럼 종료
-                    elif curStr == ',':
-
-                        if isSkip:
-                            continue;
-
-                        if isTopic:
-                            if temStr == '개인ID':
-                                keyDic['개인ID'] = keyCount;
-                            elif temStr == '회원명':
-                                keyDic['회원명'] = keyCount;
-                            elif temStr == '연락처':
-                                keyDic['연락처'] = keyCount;
-                            elif temStr == '회사명':
-                                keyDic['회사명'] = keyCount;
-                            elif temStr == '호점':
-                                keyDic['호점'] = keyCount;
-                            elif temStr == '서비스타입':
-                                keyDic['서비스타입'] = keyCount;
-                        else:
-                            if keyCount == keyDic['개인ID']:
-                                temDic['id'] = temStr;
-                            elif keyCount == keyDic['회원명']:
-                                temDic['name'] = temStr;
-                            elif keyCount == keyDic['연락처']:
-                                temDic['phone'] = temStr;
-                            elif keyCount == keyDic['회사명']:
-                                temDic['company'] = temStr;
-                            elif keyCount == keyDic['호점']:
-                                temDic['locate'] = temStr;
-                            elif keyCount == keyDic['서비스타입']:
-                                if temStr == '퇴실회원':
-                                    isSkip = True;                                
-
-                        keyCount += 1;
-                        temStr = "";
-
-                    # 개별 문자 저장
-                    else:
-                        temStr += curStr;
-                
-
+                        curName = "obj" + str(nameKey);
+                        nameKey += 1;
+                        totalDic[curName] = temDic;
+            
         # 개별 정보로 데이터베이스 변경
         else:
             if not (request.form.get('newId') and request.form.get('newName') and request.form.get('newPhone') and request.form.get('newCompany') and request.form.get('newLocate')):                
@@ -180,6 +141,7 @@ def user_new():
                 temDic['type'] = rType;
                 totalDic['obj'] = temDic;
 
+        # 데이터에 문제가 없다 판단시에만 저장 진행
         if isOk:
             # Aws ApiGateway 전달
             awsEndpoint = 'https://a3df8nbpa2.execute-api.ap-northeast-2.amazonaws.com/v1/conndb'
