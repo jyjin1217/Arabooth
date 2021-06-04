@@ -170,18 +170,38 @@ def userMessage(message):
 
     m = message.split(' ');
     returnMsg = {};
-    returnMsg['msg'] = "Inappropriate Message";
+    returnMsg['msg'] = "Failed";
 
-    if m[0] == 'Work&All' and len(m) >= 4:
-        if m[3] == "on" or m[3] == "off":
-            if m[1] in deviceDic:
-                if m[2] in deviceDic[m[1]]:
-                    s.switch(m[3], deviceDic[m[1]][m[2]]); 
-                    returnMsg['msg'] = "Dispatched";
-    
-    mjson = json.dumps(returnMsg);
-    
-    return mjson;
+    if message == "테스트":
+        returnMsg['msg'] = "Dispatched";
+        return json.dumps(returnMsg);
+
+    if s == None:
+        loginSonoff();
+
+    counting = 0;
+    while counting < 5:        
+        if m[0] == 'Work&All' and len(m) >= 4:
+            if m[3] == "on" or m[3] == "off":
+                if m[1] in deviceDic:
+                    if m[2] in deviceDic[m[1]]: 
+                        result = s.switch(m[3], deviceDic[m[1]][m[2]]);
+                        if result:
+                            returnMsg['msg'] = "Dispatched";
+                            break;
+                        else:
+                            loginSonoff();
+                            counting += 1;
+                    else:
+                        break;
+                else:
+                    break;
+            else:
+                break;
+        else:
+            break;
+   
+    return json.dumps(returnMsg);
 
 def loginSonoff():
     # ewelink 로그인
@@ -217,8 +237,8 @@ def thProc():
         sleep(1800);
 
 # 쓰레드 실행
-th = threading.Thread(target=thProc);
-th.start();
+# th = threading.Thread(target=thProc);
+# th.start();
 
 
 

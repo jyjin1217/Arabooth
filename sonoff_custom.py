@@ -251,13 +251,15 @@ class Sonoff():
         # we're in the grace period, no state change
         if self._skipped_login:
             print("Grace period, no state change")
-            return (not new_state)
+            # return (not new_state)
+            return False;
 
         self._ws = self._get_ws()
         
         if not self._ws:
             print('invalid websocket, state cannot be changed')
-            return (not new_state)
+            # return (not new_state)
+            return False;
 
         # convert from True/False to on/off
         if isinstance(new_state, (bool)):
@@ -323,5 +325,6 @@ class Sonoff():
         # @TODO add some sort of validation here, maybe call the devices status 
         # only IF MAIN STATUS is done over websocket exclusively
 
-        return new_state
+        #return new_state
+        return True;
 
