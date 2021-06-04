@@ -237,8 +237,8 @@ def thProc():
         sleep(1800);
 
 # 쓰레드 실행
-# th = threading.Thread(target=thProc);
-# th.start();
+th = threading.Thread(target=thProc);
+th.start();
 
 
 
