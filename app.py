@@ -172,7 +172,7 @@ def userMessage(message):
     returnMsg = {};
     returnMsg['msg'] = "Failed";
 
-    if message == "테스트":
+    if m[0] == "테스트":
         returnMsg['msg'] = "Dispatched";
         return json.dumps(returnMsg);
 
@@ -180,12 +180,12 @@ def userMessage(message):
         loginSonoff();
 
     counting = 0;
-    while counting < 5:        
-        if m[0] == 'Work&All' and len(m) >= 4:
-            if m[3] == "on" or m[3] == "off":
-                if m[1] in deviceDic:
-                    if m[2] in deviceDic[m[1]]: 
-                        result = s.switch(m[3], deviceDic[m[1]][m[2]]);
+    while counting < 5: 
+        if len(m) == 3:
+            if m[2] == "on" or m[2] == "off":
+                if m[0] in deviceDic:
+                    if m[1] in deviceDic[m[0]]: 
+                        result = s.switch(m[2], deviceDic[m[0]][m[1]]);
                         if result:
                             returnMsg['msg'] = "Dispatched";
                             break;
@@ -193,13 +193,16 @@ def userMessage(message):
                             loginSonoff();
                             counting += 1;
                     else:
-                        break;
+                        loginSonoff();
+                        counting += 1;
                 else:
-                    break;
+                    loginSonoff();
+                    counting += 1;
             else:
                 break;
         else:
             break;
+
    
     return json.dumps(returnMsg);
 
@@ -207,7 +210,7 @@ def loginSonoff():
     # ewelink 로그인
     global s, deviceDic;
     if s == None:
-        s = sonoff_custom.Sonoff("iason78@naver.com", "koelceo5406!", "as");
+        s = sonoff_custom.Sonoff("contact5@worknall.com", "opentoday21!", "as");
     else:
         s.do_reconnect();
     
@@ -215,18 +218,18 @@ def loginSonoff():
     temp = s.get_devices();
     for device in temp:        
         dName = device['name'].split(' ');
-
-        if dName[0] != 'Work&All':
-            continue;
-        if len(dName) < 3 :
+        
+        if len(dName) < 2 :
             continue;        
                 
-        if dName[1] in deviceDic :
-            deviceDic[dName[1]][dName[2]] = device['deviceid'];
+        if dName[0] in deviceDic :
+            deviceDic[dName[0]][dName[1]] = device['deviceid'];
         else:
             temDic = {};
-            temDic[dName[2]] = device['deviceid'];
-            deviceDic[dName[1]] = temDic;
+            temDic[dName[1]] = device['deviceid'];
+            deviceDic[dName[0]] = temDic;
+
+
     
 
 
