@@ -13,12 +13,12 @@
             <!-- DataTales Example -->
             <div class="card shadow mb-4" style="margin-top: 1.5rem!important;">
                 <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Create New User</h6>
+                    <h6 class="m-0 font-weight-bold text-primary">Manage User</h6>
                 </div>
                 <div class="card-body">        
                     
                     <form action = "#" method = "POST" enctype = "multipart/form-data">
-                        <p class="m-0 font-weight-bold text-primary">* 개별정보로 업로드</p>
+                        <p class="m-0 font-weight-bold text-primary">* (1인)개별정보 업로드</p>
                         <p></p>
                         <input name="newId" type="text" class="form-control form-control-user" placeholder="Enter id.." style="width: 15%; display: unset;">
                         <input name="newName" type="text" class="form-control form-control-user" placeholder="Enter name.." style="width: 15%; display: unset;">
@@ -32,7 +32,7 @@
                     <p></p>
 
                     <form action = "#" method = "POST" enctype = "multipart/form-data">
-                        <p class="m-0 font-weight-bold text-primary">* CSV파일로 업로드</p>
+                        <p class="m-0 font-weight-bold text-primary">* (단체)CSV파일 업로드</p>
                         <p></p>
                         <input type = "file" name = "file" style="cursor: pointer;"/>
                         <input type = "submit" name = "addAll" value="추가/수정"/>
@@ -63,9 +63,14 @@
                     <p></p>
 
                     <p class="m-0 font-weight-bold text-primary">* Excel 문서 양식</p>
-                    <div>content</div>  
-                    <p></p>
-                    
+                    <form action = "sampleDown" method = "GET" enctype = "multipart/form-data">
+                        <p>
+                            Excel 문서: sample.xlsx&nbsp;&nbsp;
+                            <input type = "submit" name = "xlsxDown" value="Download"/>
+                        </p>                        
+                    </form>
+                    <p>작성법: 필드 '서비스타입'은 반드시 채우지 않아도 됩니다. 그 외 필드는 모두 채워져 있어야만 합니다.</p>
+                    <p></p>                   
                     
                 </div>
             </div>

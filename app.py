@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, send_file
 import json
 import requests
 import sonoff_custom
@@ -81,7 +81,13 @@ def user_new():
                         
             # 올바른 파일(csv)인지 걸러내기 to do
             if isOk:
-                pass;
+                f = request.files["file"];
+                cType = f.content_type;
+                
+                extension = cType.split('.');
+                if extension[len(extension) - 1] != "ms-excel":
+                    csvResult = "File extension is not match. Must be csv file";
+                    isOk = False;
             
             # csv파일 확인시
             if isOk:
@@ -147,20 +153,14 @@ def user_new():
             awsEndpoint = 'https://a3df8nbpa2.execute-api.ap-northeast-2.amazonaws.com/v1/conndb'
             msgJson = json.dumps(totalDic)
             requests.request('POST', awsEndpoint, data=msgJson)
-            csvResult = "Data is delivered"
-
-
-        # # 경로값 분리 및  확장자 검사
-        # name, extenstion = os.path.splitext(fileLocate);
-        # if extenstion == "":
-        #     csvResult = "Address must include file extension"
-        #     return render_template("user_new.html", postResult=csvResult);
-        # elif extenstion != ".csv":
-        #     csvResult = "Allowed file type is .csv file only"
-        #     return render_template("user_new.html", postResult=csvResult);
-
+            csvResult = "Success. Data is delivered"
 
     return render_template("user_new.html", postResult=csvResult);
+
+# sample Excel 문서 다운로드
+@application.route("/sampleDown")
+def downloadDample():
+    return send_file("static/sample.xlsx");
 
 
 # 외부유저(mobile) 요청(iot control), <message> 규칙: 'Work&All 지역명 구분이름 on/off'
