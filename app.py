@@ -172,7 +172,7 @@ def userMessage(message):
     returnMsg = {};
     returnMsg['msg'] = "Failed";
 
-    if m[0] == "테스트":
+    if message == "테스트":
         returnMsg['msg'] = "Dispatched";
         return json.dumps(returnMsg);
 
