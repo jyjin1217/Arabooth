@@ -170,11 +170,7 @@ def userMessage(message):
 
     m = message.split(' ');
     returnMsg = {};
-    returnMsg['msg'] = "Failed";
-
-    if message == "테스트":
-        returnMsg['msg'] = "Dispatched";
-        return json.dumps(returnMsg);
+    returnMsg['msg'] = "Failed";    
 
     if s == None:
         loginSonoff();
@@ -190,20 +186,25 @@ def userMessage(message):
                             returnMsg['msg'] = "Dispatched";
                             break;
                         else:
+                            returnMsg['detail'] = "RequestFail";
                             loginSonoff();
                             counting += 1;
                     else:
+                        returnMsg['detail'] = "NoneMatch";
                         loginSonoff();
                         counting += 1;
                 else:
+                    returnMsg['detail'] = "NoneMatch";
                     loginSonoff();
                     counting += 1;
             else:
+                returnMsg['detail'] = "WrongMessage";
                 break;
         else:
+            returnMsg['detail'] = "WrongMessage";
             break;
 
-   
+
     return json.dumps(returnMsg);
 
 def loginSonoff():
