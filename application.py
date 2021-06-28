@@ -79,7 +79,7 @@ def user_new():
                 isOk = False;
                 csvResult = "No file to upload";
                         
-            # 올바른 파일(csv)인지 걸러내기 to do
+            # 올바른 파일(csv)인지 걸러내기
             if isOk:
                 f = request.files["file"];
                 cType = f.content_type;

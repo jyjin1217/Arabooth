@@ -6,83 +6,66 @@
 
 {% block content %}
 <!-- Begin Page Content -->
-<div class="container-fluid">
-    
-   <!-- Content Row -->
-   <div class="row">
+<div class="container-fluid" style="max-height: 100vh;">
+  
+    <div style="width: 100%; height: 100vh; padding-top: 1.5rem; padding-bottom: 1.5rem;">
 
-         <!-- Donut Chart -->
-        <div class="col-xl-4 col-lg-5">
-            <div class="card shadow mb-4">
-                <!-- Card Header - Dropdown -->
-                <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Donut Chart</h6>
+        <div style="display: grid; grid-template-columns: 29% 69%; grid-template-rows: 49% 49%; width: 100%; height: 100%; column-gap: 1rem; row-gap: 1rem;">
+
+            <div class="card shadow myCardSet">
+                <div class="card-header py-3 chartTop">
+                    <h6 class="m-0 font-weight-bold text-primary">현재 사용자 - Current User</h6>
                 </div>
-                <!-- Card Body -->
                 <div class="card-body">
-                    <div class="chart-pie pt-4">
-                        <canvas id="myPieChart" style="height: 250px;"></canvas>
+                    <div class="chart-area" style="height: 80%; width: 100%;">
+                        
                     </div>
                     <hr>
-                    Styling for the donut chart can be found in the
-                    <code>/js/demo/chart-pie-demo.js</code> file.
+                    총원 : 00
+                    
                 </div>
             </div>
 
-            <div class="card shadow mb-4">
-                <!-- Card Header - Dropdown -->
-                <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Donut Chart</h6>
-                </div>
-                <!-- Card Body -->
-                <div class="card-body">
-                    <div class="chart-pie pt-4">
-                        <canvas id="myPieChart" style="height: 250px;"></canvas>
-                    </div>
-                    <hr>
-                    Styling for the donut chart can be found in the
-                    <code>/js/demo/chart-pie-demo.js</code> file.
-                </div>
-            </div>
-        </div>
-
-
-
-        <div class="col-xl-8 col-lg-7">
-
-            <!-- Area Chart -->
-            <div class="card shadow mb-4">
-                <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Area Chart</h6>
+            <div class="card shadow myCardSet">
+                <div class="card-header py-3 chartTop">
+                    <h6 class="m-0 font-weight-bold text-primary">누적 사용자 통계 - Cumulative User Statistics</h6>
                 </div>
                 <div class="card-body">
-                    <div class="chart-area">
-                        <canvas id="myAreaChart" style="height: 250px;"></canvas>
+                    <div class="chart-area" style="height: 80%; width: 100%;">
+                        <canvas id="myAreaChart"></canvas>
                     </div>
                     <hr>
-                    Styling for the area chart can be found in the
-                    <code>/js/demo/chart-area-demo.js</code> file.
+                    
                 </div>
             </div>
 
-            <!-- Bar Chart -->
-            <div class="card shadow mb-4">
-                <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Bar Chart</h6>
+            <div class="card shadow myCardSet">
+                <div class="card-header py-3 chartTop">
+                    <h6 class="m-0 font-weight-bold text-primary">업체 사용량 통계 - By Enterprise Statistics</h6>
                 </div>
                 <div class="card-body">
-                    <div class="chart-bar">
-                        <canvas id="myBarChart" style="height: 250px;"></canvas>
+                    <div class="chart-area" style="height: 80%; width: 100%;">
+                        <canvas id="myPieChart"></canvas>
                     </div>
                     <hr>
-                    Styling for the bar chart can be found in the
-                    <code>/js/demo/chart-bar-demo.js</code> file.
+                    
+                </div>
+            </div>
+
+            <div class="card shadow myCardSet">
+                <div class="card-header py-3 chartTop">
+                    <h6 class="m-0 font-weight-bold text-primary">사용시간 통계 - Hours of Use Statistics</h6>
+                </div>
+                <div class="card-body">
+                    <div class="chart-bar" style="height: 80%; width: 100%;">
+                        <canvas id="myBarChart"></canvas>
+                    </div>
+                    <hr>
+                    
                 </div>
             </div>
 
         </div>
-
-      
     </div>
 
     <!-- Page level plugins -->
