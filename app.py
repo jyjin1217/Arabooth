@@ -20,6 +20,11 @@ def home():
     return render_template("index.html");
 
 # 테이블 페이지
+@application.route("/user_total")
+def user_total():
+    return render_template("user_total.html");
+
+# 테이블 페이지
 @application.route("/iot_total")
 def iot_total():
     return render_template("iot_total.html");
