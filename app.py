@@ -14,6 +14,30 @@ deviceDic = {};
 
 application = Flask(__name__);
 
+#TEST
+# @application.route("/diytest")
+# def diyTest():
+#     endpoint = 'http://192.168.0.23:8081/zeroconf/info';
+#     dic1 = {};
+#     dic1['deviceid'] = "";
+#     dic1["data"] = {};
+
+#     # endpoint = 'http://192.168.0.23:8081/zeroconf/switch';
+#     # dic2 = {};
+#     # dic2['switch'] = "off";
+#     # dic1 = {};
+#     # dic1['deviceid'] = "";
+#     # dic1["data"] = dic2;
+
+#     msgJson = json.dumps(dic1)
+#     res = requests.request('POST', endpoint, data=msgJson)    
+
+#     print(res);
+#     print(res.content);
+
+#     return render_template("index.html");
+
+
 # 대시보드 페이지
 @application.route("/")
 def home():
@@ -28,6 +52,49 @@ def user_total():
 @application.route("/iot_total")
 def iot_total():
     return render_template("iot_total.html");
+
+# 사용량 정보 페이지
+@application.route("/usage_info")
+def usage_info():
+    endpoint = 'https://a3df8nbpa2.execute-api.ap-northeast-2.amazonaws.com/v1/log';
+    res = requests.request('GET', endpoint)  
+    mstr = res.content.decode('utf-8')
+    jobj = json.loads(mstr)
+
+    jlist = []
+    for key in jobj:
+        if jobj[key]['BoothName'] == "테스트":
+            continue
+
+        curdic = jobj[key];
+
+        sdate = curdic['StartDate'].split('.');
+        temStr = ""
+        for val in sdate:
+            if int(float(val)) < 10 :
+                temStr += '0' + val
+            else:
+                temStr += val
+            temStr += '.'
+        curdic['StartDate'] = temStr;
+
+        edate = curdic['EndDate'].split('.');
+        temStr = ""
+        for val in edate:
+            if val == "occupied":
+                temStr = val;
+                break;
+
+            if int(float(val)) < 10 :
+                temStr += '0' + val
+            else:
+                temStr += val
+            temStr += '.'
+        curdic['EndDate'] = temStr;
+
+        jlist.append(curdic)
+
+    return render_template("usage_info.html", content=jlist);
 
 # 신규디바이스 등록 페이지
 @application.route("/iot_new", methods=["POST","GET"])
@@ -235,8 +302,6 @@ def loginSonoff():
             temDic[dName[1]] = device['deviceid'];
             deviceDic[dName[0]] = temDic;
 
-
-    
 
 
 # 쓰레드 함수, 일정 시간마다 ewelink 재로그인 및 디바이스 업데이트
