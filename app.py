@@ -41,6 +41,12 @@ application = Flask(__name__);
 # 대시보드 페이지
 @application.route("/")
 def home():
+    # sstr = "08";
+    # print(type(sstr));
+    # nnum = int(float(sstr));
+    # print(nnum);
+    # print(type(nnum));
+
     return render_template("index.html");
 
 # 테이블 페이지
@@ -62,37 +68,44 @@ def usage_info():
     jobj = json.loads(mstr)
 
     jlist = []
+    # for key in jobj:
+    #     if jobj[key]['BoothName'] == "테스트":
+    #         continue
+
+    #     curdic = jobj[key];
+
+    #     sdate = curdic['StartDate'].split('.');
+    #     temStr = ""
+    #     for val in sdate:
+    #         if int(float(val)) < 10 :
+    #             temStr += '0' + val
+    #         else:
+    #             temStr += val
+    #         temStr += '.'
+    #     curdic['StartDate'] = temStr;
+
+    #     edate = curdic['EndDate'].split('.');
+    #     temStr = ""
+    #     for val in edate:
+    #         if val == "occupied":
+    #             temStr = val;
+    #             break;
+
+    #         if int(float(val)) < 10 :
+    #             temStr += '0' + val
+    #         else:
+    #             temStr += val
+    #         temStr += '.'
+    #     curdic['EndDate'] = temStr;
+
+    #     jlist.append(curdic)
+
     for key in jobj:
         if jobj[key]['BoothName'] == "테스트":
             continue
 
-        curdic = jobj[key];
+        jlist.append(jobj[key])
 
-        sdate = curdic['StartDate'].split('.');
-        temStr = ""
-        for val in sdate:
-            if int(float(val)) < 10 :
-                temStr += '0' + val
-            else:
-                temStr += val
-            temStr += '.'
-        curdic['StartDate'] = temStr;
-
-        edate = curdic['EndDate'].split('.');
-        temStr = ""
-        for val in edate:
-            if val == "occupied":
-                temStr = val;
-                break;
-
-            if int(float(val)) < 10 :
-                temStr += '0' + val
-            else:
-                temStr += val
-            temStr += '.'
-        curdic['EndDate'] = temStr;
-
-        jlist.append(curdic)
 
     return render_template("usage_info.html", content=jlist);
 
