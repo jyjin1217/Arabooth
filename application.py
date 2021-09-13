@@ -1,147 +1,90 @@
 from flask import Flask, render_template, request, send_file
 import json
 import requests
-import sonoff_custom
 import csv
-import threading
-from time import sleep
-import os
-from pymongo import MongoClient
-import sys
+import datetime as dt
+# import sonoff_custom
+# import threading
+# from time import sleep
+# import os
+# from pymongo import MongoClient
+# import sys
 
-s = None;
-deviceDic = {};
+# s = None;
+# deviceDic = {};
 
 application = Flask(__name__);
-
-#TEST
-# @application.route("/diytest")
-# def diyTest():
-#     endpoint = 'http://192.168.0.23:8081/zeroconf/info';
-#     dic1 = {};
-#     dic1['deviceid'] = "";
-#     dic1["data"] = {};
-
-#     # endpoint = 'http://192.168.0.23:8081/zeroconf/switch';
-#     # dic2 = {};
-#     # dic2['switch'] = "off";
-#     # dic1 = {};
-#     # dic1['deviceid'] = "";
-#     # dic1["data"] = dic2;
-
-#     msgJson = json.dumps(dic1)
-#     res = requests.request('POST', endpoint, data=msgJson)    
-
-#     print(res);
-#     print(res.content);
-
-#     return render_template("index.html");
-
 
 # 대시보드 페이지
 @application.route("/")
 def home():
-    # sstr = "08";
-    # print(type(sstr));
-    # nnum = int(float(sstr));
-    # print(nnum);
-    # print(type(nnum));
-
     return render_template("index.html");
 
-# 테이블 페이지
-@application.route("/user_total")
-def user_total():
-    return render_template("user_total.html");
 
-# 테이블 페이지
-@application.route("/iot_total")
-def iot_total():
-    return render_template("iot_total.html");
+# 테이블
+# @application.route("/user_total")
+# def user_total():
+#     return render_template("user_total.html");
+
+# @application.route("/iot_total")
+# def iot_total():
+#     return render_template("iot_total.html");
+
 
 # 사용량 정보 페이지
 @application.route("/usage_info")
 def usage_info():
-    endpoint = 'https://a3df8nbpa2.execute-api.ap-northeast-2.amazonaws.com/v1/log';
+    
+    queryYear = request.args.get('year');
+    queryMonth = request.args.get('month');
+
+    date = dt.datetime.now();
+
+    comboYear = []
+    for i in range(2021, date.year + 1):
+        comboYear.append(i);
+    
+    searchYear = str(date.year);
+    searchMonth = date.month;   
+
+    endpoint = 'https://a3df8nbpa2.execute-api.ap-northeast-2.amazonaws.com/v1/log';   
+
+    if queryYear != None and queryMonth != None:
+        endpoint = endpoint + '?year=' + queryYear + "&month=" + queryMonth;
+        searchYear = queryYear;
+        searchMonth = queryMonth;
+    else:
+        if searchMonth < 10:
+            searchMonth = '0' + str(searchMonth);
+        else:
+            searchMonth = str(searchMonth);        
+        endpoint = endpoint + '?year=' + searchYear + "&month=" + searchMonth;
+
     res = requests.request('GET', endpoint)  
     mstr = res.content.decode('utf-8')
     jobj = json.loads(mstr)
 
     jlist = []
-    # for key in jobj:
-    #     if jobj[key]['BoothName'] == "테스트":
-    #         continue
-
-    #     curdic = jobj[key];
-
-    #     sdate = curdic['StartDate'].split('.');
-    #     temStr = ""
-    #     for val in sdate:
-    #         if int(float(val)) < 10 :
-    #             temStr += '0' + val
-    #         else:
-    #             temStr += val
-    #         temStr += '.'
-    #     curdic['StartDate'] = temStr;
-
-    #     edate = curdic['EndDate'].split('.');
-    #     temStr = ""
-    #     for val in edate:
-    #         if val == "occupied":
-    #             temStr = val;
-    #             break;
-
-    #         if int(float(val)) < 10 :
-    #             temStr += '0' + val
-    #         else:
-    #             temStr += val
-    #         temStr += '.'
-    #     curdic['EndDate'] = temStr;
-
-    #     jlist.append(curdic)
-
     for key in jobj:
         if jobj[key]['BoothName'] == "테스트":
             continue
-
         jlist.append(jobj[key])
 
-
-    return render_template("usage_info.html", content=jlist);
+    return render_template("usage_info.html", content=jlist, year=searchYear, month=searchMonth, cYear=comboYear);
 
 # 신규디바이스 등록 페이지
-@application.route("/iot_new", methods=["POST","GET"])
-def iot_new():
-    if request.method == "POST":
-        pass;
-        # client = MongoClient("arabooth.cluster-cnnzidmnwuis.ap-northeast-2.docdb.amazonaws.com:27017", username="mocha", password="mochamocha.", ssl="true")
-        
-        # client = MongoClient('mongodb://mocha:mochamocha.@arabooth.cluster-cnnzidmnwuis.ap-northeast-2.docdb.amazonaws.com:27017/?ssl=true&ssl_ca_certs=C:\\Users\\jyjin\\Desktop\\ParkingB\\aws\\rds-combined-ca-bundle.pem&replicaSet=rs0&readPreference=secondaryPreferred&retryWrites=false')
-        # client = MongoClient('mongodb://mocha:mochamocha.@arabooth.cluster-cnnzidmnwuis.ap-northeast-2.docdb.amazonaws.com:27017/?ssl=true&ssl_ca_certs=rds-combined-ca-bundle.pem&replicaSet=rs0&readPreference=secondaryPreferred&retryWrites=false')
-        # client = MongoClient('mongodb://mocha:mochamocha.@docdb-2021-05-11-05-38-41.cluster-cnnzidmnwuis.ap-northeast-2.docdb.amazonaws.com:27017/?replicaSet=rs0&readPreference=secondaryPreferred&retryWrites=false')
-        # client = MongoClient('mocha:mochamocha.@docdb-2021-05-11-05-38-41.cluster-cnnzidmnwuis.ap-northeast-2.docdb.amazonaws.com:27017/?replicaSet=rs0&readPreference=secondaryPreferred&retryWrites=false')
-        # print(client);
-        # db = client.sample_database;
-        # print(db);
-        # col = db.sample_collection;
-        # print(col);
-        # col.insert_one({'hello':'Amazon DocumentDB'});
-        # x = col.find_one({'hello':'Amazon DocumentDB'});
-        # print(x);
-        # client.close();
-
-
-
-        # print(client.list_database_names());
-        
+# @application.route("/iot_new", methods=["POST","GET"])
+# def iot_new():
+#     if request.method == "POST":
+#         pass;
     
-    return render_template("iot_new.html");
+#     return render_template("iot_new.html");
 
 # 신규유저 등록 페이지
 @application.route("/user_new", methods=["POST","GET"])
 def user_new():
 
-    # 페이지에 던져줄 로그용 string
+    # 클라에 던져줄 로그 string
     csvResult = "";
 
     if request.method == "POST":  
@@ -249,83 +192,83 @@ def downloadDample():
 
 
 # 외부유저(mobile) 요청(iot control), <message> 규칙: 'Work&All 지역명 구분이름 on/off'
-@application.route("/userMessage/<message>", methods=["POST","GET"])
-def userMessage(message):
-    global s, deviceDic;
+# @application.route("/userMessage/<message>", methods=["POST","GET"])
+# def userMessage(message):
+#     global s, deviceDic;
 
-    m = message.split(' ');
-    returnMsg = {};
-    returnMsg['msg'] = "Failed";    
+#     m = message.split(' ');
+#     returnMsg = {};
+#     returnMsg['msg'] = "Failed";    
 
-    if s == None:
-        loginSonoff();
+#     if s == None:
+#         loginSonoff();
 
-    counting = 0;
-    while counting < 5: 
-        if len(m) == 3:
-            if m[2] == "on" or m[2] == "off":
-                if m[0] in deviceDic:
-                    if m[1] in deviceDic[m[0]]: 
-                        result = s.switch(m[2], deviceDic[m[0]][m[1]]);
-                        if result:
-                            returnMsg['msg'] = "Dispatched";
-                            break;
-                        else:
-                            returnMsg['detail'] = "RequestFail";
-                            loginSonoff();
-                            counting += 1;
-                    else:
-                        returnMsg['detail'] = "NoneMatch";
-                        loginSonoff();
-                        counting += 1;
-                else:
-                    returnMsg['detail'] = "NoneMatch";
-                    loginSonoff();
-                    counting += 1;
-            else:
-                returnMsg['detail'] = "WrongMessage";
-                break;
-        else:
-            returnMsg['detail'] = "WrongMessage";
-            break;
+#     counting = 0;
+#     while counting < 5: 
+#         if len(m) == 3:
+#             if m[2] == "on" or m[2] == "off":
+#                 if m[0] in deviceDic:
+#                     if m[1] in deviceDic[m[0]]: 
+#                         result = s.switch(m[2], deviceDic[m[0]][m[1]]);
+#                         if result:
+#                             returnMsg['msg'] = "Dispatched";
+#                             break;
+#                         else:
+#                             returnMsg['detail'] = "RequestFail";
+#                             loginSonoff();
+#                             counting += 1;
+#                     else:
+#                         returnMsg['detail'] = "NoneMatch";
+#                         loginSonoff();
+#                         counting += 1;
+#                 else:
+#                     returnMsg['detail'] = "NoneMatch";
+#                     loginSonoff();
+#                     counting += 1;
+#             else:
+#                 returnMsg['detail'] = "WrongMessage";
+#                 break;
+#         else:
+#             returnMsg['detail'] = "WrongMessage";
+#             break;
 
 
-    return json.dumps(returnMsg);
+#     return json.dumps(returnMsg);
 
-def loginSonoff():
-    # ewelink 로그인
-    global s, deviceDic;
-    if s == None:
-        s = sonoff_custom.Sonoff("contact5@worknall.com", "opentoday21!", "as");
-    else:
-        s.do_reconnect();
+# def loginSonoff():
+#     # ewelink 로그인
+#     global s, deviceDic;
+#     if s == None:
+#         s = sonoff_custom.Sonoff("contact5@worknall.com", "opentoday21!", "as");
+#     else:
+#         s.do_reconnect();
     
-    # 디바이스 업데이트, 디바이스 이름 규칙: 'Work&All 지역명 구분이름'
-    temp = s.get_devices();
-    for device in temp:        
-        dName = device['name'].split(' ');
+#     # 디바이스 업데이트, 디바이스 이름 규칙: 'Work&All 지역명 구분이름'
+#     temp = s.get_devices();
+#     for device in temp:        
+#         dName = device['name'].split(' ');
         
-        if len(dName) < 2 :
-            continue;        
+#         if len(dName) < 2 :
+#             continue;        
                 
-        if dName[0] in deviceDic :
-            deviceDic[dName[0]][dName[1]] = device['deviceid'];
-        else:
-            temDic = {};
-            temDic[dName[1]] = device['deviceid'];
-            deviceDic[dName[0]] = temDic;
+#         if dName[0] in deviceDic :
+#             deviceDic[dName[0]][dName[1]] = device['deviceid'];
+#         else:
+#             temDic = {};
+#             temDic[dName[1]] = device['deviceid'];
+#             deviceDic[dName[0]] = temDic;
 
 
 
 # 쓰레드 함수, 일정 시간마다 ewelink 재로그인 및 디바이스 업데이트
-def thProc():
-    while True:
-        loginSonoff();
-        sleep(1800);
+# def thProc():
+#     while True:
+#         loginSonoff();
+#         sleep(1800);
 
 # 쓰레드 실행
-th = threading.Thread(target=thProc);
-th.start();
+# th = threading.Thread(target=thProc);
+# th.start();
 
 
 
