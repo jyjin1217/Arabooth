@@ -35,47 +35,114 @@
 
                     </div>
                     <hr>
-                    총원 : 01 명
+                    <div style="text-align: center;white-space: nowrap;overflow: hidden;">
+                        총원 : 01 명
+                    </div>
                     
                 </div>
             </div>
 
             <div class="card shadow myCardSet">
                 <div class="card-header py-3 chartTop">
-                    <h6 class="m-0 font-weight-bold text-primary">누적 사용자 통계 - Cumulative User Statistics</h6>
+                    <h6 id="cumulativeText" class="m-0 font-weight-bold text-primary">누적 사용자 통계(Cumulative User Statistics)</h6>
                 </div>
                 <div class="card-body">
-                    <div class="chart-area" style="height: 80%; width: 100%;">
-                        <canvas id="myAreaChart"></canvas>
-                    </div>
+                    <div id="myAreaChart" class="chart-area" style="height: 80%; width: 100%;">
+                        
+                    </div>                    
                     <hr>
                     
+                    <div style="text-align: center;white-space: nowrap;overflow: hidden;">
+                        <select id="cumulativeYear">
+                            <option value="none">- YEAR -</option>
+                        </select>
+                        <button onclick="changeCumulative()" class="btn btn-info btn-icon-split">
+                            <span class="icon text-white-50">
+                                <i class="fas fa-arrow-right"></i>
+                            </span>
+                            <span class="text">Search</span>
+                        </button>
+                    </div>  
                 </div>
             </div>
 
             <div class="card shadow myCardSet">
                 <div class="card-header py-3 chartTop">
-                    <h6 class="m-0 font-weight-bold text-primary">업체별 사용량 통계 - By Enterprise Statistics</h6>
+                    <h6 id="enterpriseText" class="m-0 font-weight-bold text-primary">업체별 통계(Enterprise Statistics)</h6>
                 </div>
                 <div class="card-body">
-                    <div class="chart-area" style="height: 80%; width: 100%;">
-                        <canvas id="myPieChart"></canvas>
+                    <div id="myPieChart" class="chart-area" style="height: 80%; width: 100%;">
+                        
                     </div>
                     <hr>
-                    
+
+                    <div style="text-align: center;white-space: nowrap;overflow: hidden;">
+                        <select id="enterpriseYear">
+                            <option value="none">- YEAR -</option>
+                        </select>
+                        <select id="enterpriseMonth">
+                            <option value="none">- MONTH -</option>
+                            <option value="01">01</option>
+                            <option value="02">02</option>
+                            <option value="03">03</option>
+                            <option value="04">04</option>
+                            <option value="05">05</option>
+                            <option value="06">06</option>
+                            <option value="07">07</option>
+                            <option value="08">08</option>
+                            <option value="09">09</option>
+                            <option value="10">10</option>
+                            <option value="11">11</option>
+                            <option value="12">12</option>
+                        </select>
+                        <button onclick="changeEnterprise()" class="btn btn-info btn-icon-split">
+                            <span class="icon text-white-50">
+                                <i class="fas fa-arrow-right"></i>
+                            </span>
+                            <span class="text">Search</span>
+                        </button>
+                    </div> 
+                                      
                 </div>
             </div>
 
             <div class="card shadow myCardSet">
                 <div class="card-header py-3 chartTop">
-                    <h6 class="m-0 font-weight-bold text-primary">사용시간별 통계 - Hours of Use Statistics</h6>
+                    <h6 id="hourUseText" class="m-0 font-weight-bold text-primary">사용시간별 통계(Hours of Use Statistics)</h6>
                 </div>
                 <div class="card-body">
-                    <div class="chart-bar" style="height: 80%; width: 100%;">
-                        <canvas id="myBarChart"></canvas>
+                    <div id="myBarChart" class="chart-bar" style="height: 80%; width: 100%;">
+                        
                     </div>
                     <hr>
                     
+                    <div style="text-align: center;white-space: nowrap;overflow: hidden;">
+                        <select id="hourUseYear">
+                            <option value="none">- YEAR -</option>
+                        </select>
+                        <select id="hourUseMonth">
+                            <option value="none">- MONTH -</option>
+                            <option value="01">01</option>
+                            <option value="02">02</option>
+                            <option value="03">03</option>
+                            <option value="04">04</option>
+                            <option value="05">05</option>
+                            <option value="06">06</option>
+                            <option value="07">07</option>
+                            <option value="08">08</option>
+                            <option value="09">09</option>
+                            <option value="10">10</option>
+                            <option value="11">11</option>
+                            <option value="12">12</option>
+                        </select>
+                        <button onclick="changeHourUse()" class="btn btn-info btn-icon-split">
+                            <span class="icon text-white-50">
+                                <i class="fas fa-arrow-right"></i>
+                            </span>
+                            <span class="text">Search</span>
+                        </button>
+                    </div> 
+
                 </div>
             </div>
 
@@ -86,28 +153,122 @@
     <script src="{{url_for('static',filename='vendor/chart.js/Chart.min.js')}}"></script>
 
     <!-- Page level custom scripts -->
-    <script src="{{url_for('static',filename='js/demo/chart-area-demo.js')}}"></script>
-    <script src="{{url_for('static',filename='js/demo/chart-pie-demo.js')}}"></script>
-    <script src="{{url_for('static',filename='js/demo/chart-bar-demo.js')}}"></script>
-
-    <!-- <script src="{{url_for('static',filename='js/chart/chart-cumulative.js')}}"></script> -->
+    <script src="{{url_for('static',filename='js/chart/chart-cumulative.js')}}"></script>
+    <script src="{{url_for('static',filename='js/chart/chart-hourUse.js')}}"></script>
+    <script src="{{url_for('static',filename='js/chart/chart-enterprise.js')}}"></script>
 
     <script>
-         
-        //  let str = "08";
-        //  console.log(typeof str);
+        // Set new default font family and font color to mimic Bootstrap's default styling
+        Chart.defaults.global.defaultFontFamily = 'Nunito', '-apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif';
+        Chart.defaults.global.defaultFontColor = '#858796';
 
-        //  let numb = Number(str);
-        //  console.log(numb);
+        function number_format(number, decimals, dec_point, thousands_sep) {
+            // *     example: number_format(1234.56, 2, ',', ' ');
+            // *     return: '1 234,56'
+            number = (number + '').replace(',', '').replace(' ', '');
+            var n = !isFinite(+number) ? 0 : +number,
+                prec = !isFinite(+decimals) ? 0 : Math.abs(decimals),
+                sep = (typeof thousands_sep === 'undefined') ? ',' : thousands_sep,
+                dec = (typeof dec_point === 'undefined') ? '.' : dec_point,
+                s = '',
+                toFixedFix = function(n, prec) {
+                var k = Math.pow(10, prec);
+                return '' + Math.round(n * k) / k;
+                };
+            // Fix for IE parseFloat(0.55).toFixed(0) = 0;
+            s = (prec ? toFixedFix(n, prec) : '' + Math.round(n)).split('.');
+            if (s[0].length > 3) {
+                s[0] = s[0].replace(/\B(?=(?:\d{3})+(?!\d))/g, sep);
+            }
+            if ((s[1] || '').length < prec) {
+                s[1] = s[1] || '';
+                s[1] += new Array(prec - s[1].length + 1).join('0');
+            }
+            return s.join(dec);
+        }
 
-        // const urlOrigin = "https://a3df8nbpa2.execute-api.ap-northeast-2.amazonaws.com/v1/log";
-        // const getData = async () => {
-        //     let response = await fetch(urlOrigin, {method:'GET'});
-        //     console.log(response);
-        //     console.log(response.json());
-        // }
+        let cumulativeYear = document.getElementById('cumulativeYear');
+        let enterpriseYear = document.getElementById('enterpriseYear');
+        let enterpriseMonth = document.getElementById('enterpriseMonth');
+        let hourUseYear = document.getElementById('hourUseYear');
+        let hourUseMonth = document.getElementById('hourUseMonth');
 
-        // getData().catch(err => { console.log(err.message) });
+        let curDate = new Date();
+        for(let i = 2021; i < curDate.getFullYear() + 1; i++){
+            let newYear1 = document.createElement('option');
+            newYear1.value = i;
+            newYear1.text = i;
+            cumulativeYear.appendChild(newYear1);
+            
+            let newYear2 = document.createElement('option');
+            newYear2.value = i;
+            newYear2.text = i;
+            enterpriseYear.appendChild(newYear2);
+
+            let newYear3 = document.createElement('option');
+            newYear3.value = i;
+            newYear3.text = i;
+            hourUseYear.appendChild(newYear3);
+        }     
+        
+        let curMonth = curDate.getMonth() + 1;
+        curMonth = (curMonth < 10) ? '0' + curMonth : curMonth.toString();
+        cumulativeUserChart(curDate.getFullYear().toString());
+        enterpriseChart(curDate.getFullYear().toString(), curMonth);
+        hourUseChart(curDate.getFullYear().toString(), curMonth);
+
+        let cumulativeText = document.getElementById('cumulativeText');
+        let enterpriseText = document.getElementById('enterpriseText');
+        let hourUseText = document.getElementById('hourUseText');
+
+        cumulativeText.innerText = "누적 사용자 통계(Cumulative User Statistics) - " + curDate.getFullYear() + "년";
+        enterpriseText.innerText = "업체별 통계(Enterprise Statistics) - " + curDate.getFullYear() + "년 " + curMonth + "월";
+        hourUseText.innerText = "사용시간별 통계(Hours of Use Statistics) - " + curDate.getFullYear() + "년 " + curMonth + "월";
+
+        const changeCumulative = async () => {            
+            if (cumulativeYear.value == "none") {
+                alert("누적 사용자 통계 변경:\n연도를 선택해야 합니다")
+            }
+            else {
+                let result = await cumulativeUserChart(cumulativeYear.value);
+                if (result) {
+                    cumulativeText.innerText = "누적 사용자 통계(Cumulative User Statistics) - " + cumulativeYear.value + "년";
+                }
+                else {
+                    alert("Request Fail\n문제가 지속되면 관리자에게 문의해주세요")
+                }
+            }
+        }
+
+        const changeEnterprise = async() => {            
+            if (enterpriseYear.value == "none" || enterpriseMonth.value == "none") {
+                alert("업체별 사용량 통계 변경:\n연도와 월 모두 선택해야 합니다")
+            }
+            else {
+                let result = await enterpriseChart(enterpriseYear.value, enterpriseMonth.value);
+                if (result) {
+                    enterpriseText.innerText = "업체별 통계(Enterprise Statistics) - " + enterpriseYear.value + "년 " + enterpriseMonth.value + "월";
+                }
+                else {
+                    alert("Request Fail\n문제가 지속되면 관리자에게 문의해주세요")
+                }
+            }
+        }
+
+        const changeHourUse = async () => {            
+            if (hourUseYear.value == "none" || hourUseMonth.value == "none") {
+                alert("사용시간별 통계 변경:\n연도와 월 모두 선택해야 합니다")
+            }
+            else {
+                let result = await hourUseChart(hourUseYear.value, hourUseMonth.value);
+                if (result) {
+                    hourUseText.innerText = "사용시간별 통계(Hours of Use Statistics) - " + hourUseYear.value + "년 " + hourUseMonth.value + "월";
+                }
+                else {
+                    alert("Request Fail\n문제가 지속되면 관리자에게 문의해주세요")
+                }
+            }
+        }
 
     </script>
 
