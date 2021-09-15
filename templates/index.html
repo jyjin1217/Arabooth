@@ -14,10 +14,10 @@
 
             <div class="card shadow myCardSet">
                 <div class="card-header py-3 chartTop">
-                    <h6 class="m-0 font-weight-bold text-primary">현재 사용자 - Current User</h6>
+                    <h6 id="todayText" class="m-0 font-weight-bold text-primary">오늘 사용자(Today) - 총원 : 01명</h6>
                 </div>
                 <div class="card-body">
-                    <div class="chart-area" style="height: 80%; width: 100%; overflow-y: scroll;">
+                    <!-- <div class="chart-area" style="height: 80%; width: 100%; overflow-y: scroll;">
 
                         <div style="display: grid; grid-template-columns: 45% 30% 20% 45%; column-gap: 0.5rem; text-align: center;">
                             <span style="background-color: rgb(202, 202, 202);">부스</span>
@@ -33,10 +33,20 @@
                             <span>2021.6.25.10.40.55</span>
                         </div>
 
+                    </div> -->
+
+                    <div id="todayChart" class="chart-bar" style="height: 80%; width: 100%;">
+                        
                     </div>
                     <hr>
+
                     <div style="text-align: center;white-space: nowrap;overflow: hidden;">
-                        총원 : 01 명
+                        <button onclick="changeToday()" class="btn btn-info btn-icon-split">
+                            <span class="icon text-white-50">
+                                <i class="fas fa-arrow-right"></i>
+                            </span>
+                            <span class="text">Refresh</span>
+                        </button>
                     </div>
                     
                 </div>
@@ -156,6 +166,7 @@
     <script src="{{url_for('static',filename='js/chart/chart-cumulative.js')}}"></script>
     <script src="{{url_for('static',filename='js/chart/chart-hourUse.js')}}"></script>
     <script src="{{url_for('static',filename='js/chart/chart-enterprise.js')}}"></script>
+    <script src="{{url_for('static',filename='js/chart/chart-today.js')}}"></script>
 
     <script>
         // Set new default font family and font color to mimic Bootstrap's default styling
@@ -213,9 +224,13 @@
         
         let curMonth = curDate.getMonth() + 1;
         curMonth = (curMonth < 10) ? '0' + curMonth : curMonth.toString();
+        let curDay = curDate.getDate();
+        curDay = (curDay < 10) ? '0' + curDay : curDay.toString();
+
         cumulativeUserChart(curDate.getFullYear().toString());
         enterpriseChart(curDate.getFullYear().toString(), curMonth);
         hourUseChart(curDate.getFullYear().toString(), curMonth);
+        todayChart(curDate.getFullYear().toString(), curMonth, curDay);
 
         let cumulativeText = document.getElementById('cumulativeText');
         let enterpriseText = document.getElementById('enterpriseText');
@@ -268,6 +283,10 @@
                     alert("Request Fail\n문제가 지속되면 관리자에게 문의해주세요")
                 }
             }
+        }
+
+        const changeToday = async () => {
+            await todayChart(curDate.getFullYear().toString(), curMonth, curDay);
         }
 
     </script>
